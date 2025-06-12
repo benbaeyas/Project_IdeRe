@@ -1,0 +1,149 @@
+    body {
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      background-color: #f2f2f2;
+    }
+
+    .container {
+      max-width: 768px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    .profile-card {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+    }
+
+    .profile-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .profile-title {
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .role-badge {
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .role-investor {
+      background-color: #bfdbfe;
+      color: #1d4ed8;
+    }
+
+    .role-inovator {
+      background-color: #bbf7d0;
+      color: #059669;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    textarea {
+      width: 100%;
+      padding: 12px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    /* Navbar Styles Override */
+    .header {
+        background-color: white;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        height: 2.5rem;
+    }
+
+    /* Logo dan Menu Styles */
+    .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .desktop-nav {
+        display: flex;
+        gap: 2rem;
+        font-size: 1.125rem;
+    }
+
+    .desktop-nav a {
+        color: #666;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .desktop-nav a:hover,
+    .desktop-nav a.active {
+        color: #00CF95;
+        font-weight: bold;
+    }
+
+    /* Khusus untuk tombol Keluar */
+    .logout-btn {
+        width: auto !important; /* Override width 100% dari style button umum */
+        margin: 0 !important; /* Reset margin */
+        padding: 0.5rem 1.5rem !important; /* Sesuaikan dengan padding navbar */
+        background-color: #ef4444 !important; /* Warna merah untuk tombol keluar */
+        color: white;
+        border-radius: 0.5rem !important;
+        font-size: 1rem !important;
+        font-weight: bold;
+    }
+
+    .logout-btn:hover {
+        background-color: #dc2626 !important;
+    }
+
+    /* Style umum untuk tombol form tetap menggunakan style yang ada */
+    form button:not(.logout-btn) {
+        margin-top: 20px;
+        width: 100%;
+        padding: 12px;
+        background-color: #00CF95;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #00a67d;
+    }
+
+

@@ -1,0 +1,171 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: system-ui, sans-serif;
+    background-color: #f2f2f2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    /* Remove overflow:hidden to avoid truncation */
+}
+
+.registrasi-wrapper {
+    width: 100%;
+    max-width: 1440px;
+    margin: auto;
+    padding: 40px; /* Reduced padding to prevent excessive spacing */
+}
+
+.registrasi-container {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* Prevents overflow within the container */
+    display: flex;
+    flex-direction: row;
+}
+
+/* Kolom Kiri: Gambar */
+.registrasi-image {
+    flex: 1 0 25%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Kolom Kanan: Form */
+.registrasi-form-section {
+    flex: 3 0 75%;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+/* Logo Container */
+.logo-container {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.gambar {
+    width: 100%;
+    height: 100%;
+}
+
+.logo {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 12px;
+}
+
+.registrasi-container h1 {
+    font-size: 24px;
+    color: #494949;
+    font-weight: bold;
+    margin-bottom: 32px;
+}
+
+/* Pesan Error */
+.error-message {
+    display: none;
+    background-color: #f8d7da;
+    color: #842029;
+    border: 1px solid #dc3545;
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.error-message.show {
+    display: block;
+}
+
+/* Form Login */
+.registrasi-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Ensure labels are aligned to the left */
+.registrasi-form label {
+    font-size: 14px;
+    color: #555;
+    font-weight: 500;
+    text-align: left; /* Explicitly set text alignment to left */
+}
+
+.registrasi-form input[type="text"],
+.registrasi-form input[type="email"],
+.registrasi-form input[type="password"],
+.registrasi-form select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.registrasi-form input:focus,
+.registrasi-form select:focus {
+    outline: none;
+    border-color: #00CF95;
+    box-shadow: 0 0 0 3px rgba(0, 207, 149, 0.2);
+}
+
+.btn-registrasi {
+    width: 100%;
+    padding: 12px;
+    background-color: #00CF95;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-registrasi:hover {
+    background-color: #00a67d;
+}
+
+.registrasi-link {
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+    margin-top: 16px;
+}
+
+.registrasi-link a {
+    color: #00CF95;
+    text-decoration: underline;
+    font-weight: 500;
+}
+
+.registrasi-link a:hover {
+    color: #00a67d;
+}
+
+@media (max-width: 768px) {
+    .registrasi-container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .registrasi-image {
+        height: 100px;
+    }
+
+    .registrasi-form-section {
+        padding: 24px;
+    }
+}  
