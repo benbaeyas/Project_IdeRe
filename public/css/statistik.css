@@ -1,0 +1,62 @@
+/* statistik.css */
+
+/* Line Clamp untuk deskripsi proyek */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Progress Bar Styling */
+.progress-bar-container {
+  height: 10px;
+  background-color: #e9ecef;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 6px;
+  transition: width 0.5s ease;
+}
+
+/* Tombol Danai */
+.btn-danai {
+  margin-top: 10px;
+  width: 100%;
+  padding: 10px;
+  background-color: #00CF95;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-danai:hover {
+  background-color: #00a67d;
+}
+
+/* Input Form */
+.form-input:focus {
+  outline: none;
+  border-color: #00CF95;
+  box-shadow: 0 0 0 3px rgba(0, 207, 149, 0.2);
+}
+
+/* Tombol Delete */
+.btn-delete {
+  margin-top: 10px;
+  padding: 6px 12px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-delete:hover {
+  background-color: #c82333;
+}

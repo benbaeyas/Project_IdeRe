@@ -1,0 +1,40 @@
+/* monitoring_inovator_detail.css */
+
+/* Hover zoom effect pada foto proyek */
+.project-image img:hover {
+    transform: scale(1.05);
+}
+
+/* Progress Bar Styling */
+.progress-bar-container {
+    height: 10px;
+    background-color: #e9ecef;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 6px;
+    transition: width 0.5s ease;
+}
+
+/* Status Badge */
+.badge-open {
+    background-color: #00CF95;
+}
+
+.badge-closed {
+    background-color: #dc3545;
+}
+
+/* Tombol Kembali */
+.btn-back {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #6c757d;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-back:hover {
+    background-color: #5a6268;
+}

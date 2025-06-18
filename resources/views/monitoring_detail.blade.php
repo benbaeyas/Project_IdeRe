@@ -2,171 +2,72 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    @extends('layout.app')
-    <style>
-        body {
-            font-family: system-ui, sans-serif;
-            margin: 0;
-            background-color: #f2f2f2;
-        }
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Detail Proyek</title>
 
-        .container {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 20px;
-        }
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">    
 
-        .project-detail-card {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-        }
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>    
 
-        .project-title {
-            font-size: 24px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        .project-section {
-            margin-bottom: 20px;
-        }
-
-        .project-section strong {
-            display: block;
-            margin-bottom: 8px;
-            color: #555;
-        }
-
-        .project-image img {
-            max-width: 100%;
-            width: auto;
-            height: auto;
-            border-radius: 6px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Progress Bar */
-        .funding-progress {
-            margin-top: 10px;
-        }
-
-        .progress-bar-container {
-            height: 10px;
-            background-color: #e9ecef;
-            border-radius: 5px;
-            overflow: hidden;
-            margin-bottom: 6px;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background-color: #00CF95;
-            width: 0%;
-            transition: width 0.5s ease;
-            text-align: right;
-            padding-right: 4px;
-            color: white;
-            font-size: 10px;
-        }
-
-        .funding-details {
-            font-size: 12px;
-            color: #555;
-        }
-
-        /* Status Badge */
-        .badge {
-            display: inline-block;
-            padding: 4px 8px;
-            font-size: 12px;
-            font-weight: bold;
-            color: white;
-            border-radius: 4px;
-        }
-
-        .badge-open {
-            background-color: #00CF95;
-        }
-
-        .badge-closed {
-            background-color: #dc3545;
-        }
-
-        /* Tombol Kembali */
-        .btn-back {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #6c757d;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn-back:hover {
-            background-color: #5a6268;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .project-title {
-                font-size: 20px;
-            }
-        }
-    </style>
+    <!-- CSS Eksternal -->
+    <link rel="stylesheet" href="{{ asset('css/monitoring_inovator_detail.css') }}">
 </head>
-<body>
-    
+<body class="bg-gray-100 min-h-screen flex flex-col">
 
-    @section('content')
-        <div class="container">
-            <div class="project-detail-card">
-                <h2 class="project-title">{{ $project->judul }}</h2>
+    <!-- Main Content -->
+    <main class="flex-grow">
+        <div class="container max-w-4xl mx-auto px-4 py-10">
+            <div class="project-detail-card bg-white rounded-xl shadow-md p-8 mb-6">
+                <!-- Tombol Kembali -->
+                <div class="project-section mb-6">
+                    <a href="{{ route('monitoring_inovator') }}" class="btn-back inline-block px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition duration-300">← Kembali ke Daftar Proyek</a>
+                </div>
+
+                <!-- Judul -->
+                <h2 class="project-title text-3xl font-bold text-gray-900 mb-6">{{ $project->judul }}</h2>
 
                 <!-- Deskripsi -->
-                <div class="project-section">
-                    <strong>Deskripsi:</strong>
-                    <p>{{ $project->deskripsi }}</p>
+                <div class="project-section mb-6">
+                    <strong class="block text-base font-semibold text-gray-700 mb-2">Deskripsi:</strong>
+                    <p class="text-gray-800 leading-relaxed text-lg">{{ $project->deskripsi }}</p>
                 </div>
 
                 <!-- Foto Proyek -->
                 @if ($project->foto_proyek)
-                    <div class="project-section">
-                        <strong>Foto Proyek:</strong>
-                        <div class="project-image">
-                            <img src="{{ asset('storage/' . $project->foto_proyek) }}" 
-                                alt="Foto Proyek" 
-                                onerror="this.src='{{ asset('images/default-project.png') }}'; this.onerror=null;">
+                    <div class="project-section mb-6">
+                        <strong class="block text-base font-semibold text-gray-700 mb-2">Foto Proyek:</strong>
+                        <div class="project-image overflow-hidden rounded-lg shadow-sm max-w-md">
+                            <img src="{{ asset('storage/' . $project->foto_proyek) }}"
+                                 alt="Foto Proyek"
+                                 class="w-full h-auto object-cover transform transition duration-300 hover:scale-105"
+                                 onerror="this.onerror=null; this.src='{{ asset('images/default-project.png') }}';">
                         </div>
                     </div>
                 @endif
 
                 <!-- Pendanaan -->
-                <div class="project-section">
-                    <strong>Jumlah Dana</strong>
-                    <p><strong>Target:</strong> Rp {{ number_format($project->target_dana, 0, ',', '.') }}</p>
-                    <p><strong>Terkumpul:</strong> Rp {{ number_format($project->dana_terkumpul, 0, ',', '.') }}</p>
+                <div class="project-section mb-6">
+                    <strong class="block text-base font-semibold text-gray-700 mb-2">Jumlah Dana</strong>
+                    <p class="text-gray-800 text-lg"><strong class="font-medium">Target:</strong> Rp {{ number_format($project->target_dana, 0, ',', '.') }}</p>
+                    <p class="text-gray-800 text-lg"><strong class="font-medium">Terkumpul:</strong> Rp {{ number_format($project->dana_terkumpul, 0, ',', '.') }}</p>
 
                     <!-- Progress Bar -->
-                    <div class="funding-progress">
-                        @php
-                            $percentage = $project->target_dana > 0 
-                                ? ($project->dana_terkumpul / $project->target_dana) * 100 
-                                : 0;
-                        @endphp
+                    @php
+                        $percentage = $project->target_dana > 0 
+                            ? ($project->dana_terkumpul / $project->target_dana) * 100 
+                            : 0;
+                    @endphp
 
-                        <div class="progress-bar-container">
-                            <div class="progress-bar" style="width: {{ min($percentage, 100) }}%">
-                                <span>{{ number_format(min($percentage, 100), 1) }}%</span>
+                    <div class="funding-progress mt-4">
+                        <div class="progress-bar-container h-3 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="progress-bar h-full bg-green-500 flex items-center justify-end pr-2 text-xs text-white"
+                                 style="width: {{ min($percentage, 100) }}%">
+                                {{ number_format(min($percentage, 100), 1) }}%
                             </div>
                         </div>
-
-                        <div class="funding-details">
+                        <div class="funding-details mt-2 text-sm text-gray-600">
                             <strong>Rp {{ number_format($project->dana_terkumpul, 0, ',', '.') }}</strong> dari 
                             <strong>Rp {{ number_format($project->target_dana, 0, ',', '.') }}</strong>
                         </div>
@@ -174,32 +75,27 @@
                 </div>
 
                 <!-- Tanggal -->
-                <div class="project-section">
-                    <strong>Tanggal Pelaksanaan</strong>
-                    <p><strong>Mulai:</strong> {{ \Carbon\Carbon::parse($project->tanggal_mulai)->format('d M Y') }}</p>
-                    <p><strong>Berakhir:</strong> {{ \Carbon\Carbon::parse($project->tanggal_berakhir)->format('d M Y') }}</p>
+                <div class="project-section mb-6">
+                    <strong class="block text-base font-semibold text-gray-700 mb-2">Tanggal Pelaksanaan</strong>
+                    <p class="text-gray-800 text-lg"><strong class="font-medium">Mulai:</strong> {{ \Carbon\Carbon::parse($project->tanggal_mulai)->format('d M Y') }}</p>
+                    <p class="text-gray-800 text-lg"><strong class="font-medium">Berakhir:</strong> {{ \Carbon\Carbon::parse($project->tanggal_berakhir)->format('d M Y') }}</p>
                 </div>
 
                 <!-- Kategori -->
-                <div class="project-section">
-                    <strong>Kategori</strong>
-                    <p>{{ $project->category->nama_kategori ?? 'Tidak ada kategori' }}</p>
+                <div class="project-section mb-6">
+                    <strong class="block text-base font-semibold text-gray-700 mb-2">Kategori</strong>
+                    <p class="text-gray-800 text-lg">{{ $project->category->nama_kategori ?? 'Tidak ada kategori' }}</p>
                 </div>
 
                 <!-- Status Badge -->
                 <div class="project-section">
-                    <strong>Status</strong>
-                    <span class="badge {{ $project->status === 'open' ? 'badge-open' : 'badge-closed' }}">
+                    <strong class="block text-base font-semibold text-gray-700 mb-2">Status</strong>
+                    <span class="badge {{ $project->status === 'open' ? 'badge-open' : 'badge-closed' }} inline-block px-4 py-2 text-sm font-bold text-white rounded">
                         {{ ucfirst($project->status) }}
                     </span>
                 </div>
-
-                <!-- Tombol Kembali -->
-                <div class="project-section">
-                    <a href="{{ route('monitoring.index') }}" class="btn-back">← Kembali ke Daftar Proyek</a>
-                </div>
             </div>
         </div>
-    @endsection
+    </main>
 </body>
 </html>

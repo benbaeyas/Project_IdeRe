@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\MonitoringController;
+use App\Http\Controllers\InvestmentController;
 
 // Route untuk halaman utama (login jika belum terotentikasi)
 Route::get('/', function () {
@@ -46,11 +47,20 @@ Route::get('/statistik', [StatistikController::class, 'index'])
        ->middleware('auth'); // Tambahkan middleware auth di sini jika statistik hanya untuk user yang login
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/monitoring', [MonitoringController::class, 'index'])->name('monitoring.index');
+    // Inovator
+    Route::get('/monitoring-inovator', [MonitoringController::class, 'indexInovator'])->name('monitoring_inovator');
+
+    // Investor
+    Route::get('/monitoring-investor', [MonitoringController::class, 'indexInvestor'])->name('monitoring_investor');
+
+    // Detail monitoring (bisa dipakai oleh keduanya)
     Route::get('/monitoring/{id}', [MonitoringController::class, 'show'])->name('monitoring.show');
 });
 
 Route::get('/formajuan', [ProjectController::class, 'formajuan'])->name('project.formajuan');
+
+Route::post('/investasi/store', [App\Http\Controllers\InvestmentController::class, 'store'])->name('investasi.store');
+Route::delete('/investment/{id}', [InvestmentController::class, 'destroy'])->name('investment.destroy');
 
 // Route yang memerlukan otentikasi
 Route::middleware(['auth'])->group(function () {

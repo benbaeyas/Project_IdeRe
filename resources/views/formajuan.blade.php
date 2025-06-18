@@ -52,7 +52,8 @@
 
                 <div class="form-group">
                     <label for="foto_proyek">Foto Proyek</label>
-                    <input type="file" name="foto_proyek" id="foto_proyek" accept="image/*">
+                    <input type="file" name="foto_proyek" id="foto_proyek" accept="image/*" 
+                    oninput="this.files[0].size <= 2097152 || alert('Ukuran file terlalu besar! Maksimum 2MB.')">
                 </div>
 
                 <div class="form-group">

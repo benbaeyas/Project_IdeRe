@@ -1,10 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Models\Project;
+use App\Models\Investment;
 
 class StatistikController extends Controller
 {
@@ -33,7 +35,9 @@ class StatistikController extends Controller
                 $data[] = (float)$item->total_investasi;
             }
         }
-
-        return view('statistik', compact('labels', 'data'));
+        $projects = Project::with('category')->get();
+    $investments = Investment::with('project')->where('user_id', Auth::id())->latest()->get();
+    return view('statistik', compact('labels', 'data', 'projects', 'investments'));
+       
     }
 }
