@@ -16,6 +16,30 @@
 </head>
 <body>
 
+{{-- Notifikasi Perubahan Password --}}
+@if(session('success_password'))
+    <div class="notification success-notification">
+        {{ session('success_password') }}
+    </div>
+@endif
+
+@if(session('error_password'))
+    <div class="notification error-notification">
+        {{ session('error_password') }}
+    </div>
+@endif
+
+{{-- Menampilkan error validasi Laravel seperti password != password_confirmation --}}
+@if ($errors->has('password') || $errors->has('password_confirmation'))
+    <div class="notification error-notification">
+        @if ($errors->has('password'))
+            {{ $errors->first('password') }}
+        @elseif ($errors->has('password_confirmation'))
+            {{ $errors->first('password_confirmation') }}
+        @endif
+    </div>
+@endif
+
 @if(Auth::check())
     <!-- Profil Container -->
     <div class="container">
@@ -29,22 +53,6 @@
                 @csrf
                 @method('PUT')
 
-                @if(session('success'))
-                    <div class="alert alert-success">
-                        {{ session('success') }}
-                    </div>
-                @endif
-
-                @if($errors->any())
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-
                 <label for="nama">Nama Lengkap</label>
                 <input type="text" id="nama" name="nama" value="{{ Auth::user()->nama }}" required />
 
@@ -54,9 +62,15 @@
                 <label for="alamat">Alamat</label>
                 <textarea id="alamat" name="alamat" required>{{ Auth::user()->alamat }}</textarea>
 
+                <!-- Tambahkan input untuk Password Lama -->
+                <label for="current_password">Password Lama</label>
+                <input type="password" id="current_password" name="current_password" placeholder="Masukkan password lama" required />
+
                 <label for="password">Password Baru</label>
                 <input type="password" id="password" name="password" placeholder="Masukkan password baru" />
 
+                <label for="password_confirmation">Konfirmasi Password Baru</label>
+                <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Ulangi password baru" />
                 <button type="submit">Simpan Perubahan</button>
             </form>
         </div>
@@ -70,6 +84,22 @@
 @endif
 
 @include('components.footer')
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const notifications = document.querySelectorAll('.notification');
+    notifications.forEach(notification => {
+        setTimeout(() => {
+            // Mulai transisi fade out
+            notification.style.opacity = '0';
+            // Hapus elemen dari DOM setelah transisi selesai
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 500); // Waktu ini harus cocok dengan durasi transisi di CSS (0.5s)
+        }, 5000); // Notifikasi hilang setelah 5 detik (5000 ms)
+    });
+});
+</script>
 
 </body>
 </html>

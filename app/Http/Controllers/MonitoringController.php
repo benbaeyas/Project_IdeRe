@@ -1,65 +1,31 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Models\Monitoring;
+use App\Models\Project;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class MonitoringController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
-    {
-        //
+{
+    // Ambil semua proyek milik user yang sedang login
+    $projects = Project::where('user_id', Auth::id())->get();
+
+    return view('monitoring', compact('projects'));
+}
+
+
+public function show($id)
+{
+    $project = Project::with('category', 'user')->findOrFail($id);
+
+    // Pastikan user hanya bisa lihat miliknya
+    if ($project->user_id !== Auth::id()) {
+        abort(403, 'Unauthorized');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+    return view('monitoring_detail', compact('project'));
+}
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Monitoring $monitoring)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Monitoring $monitoring)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Monitoring $monitoring)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Monitoring $monitoring)
-    {
-        //
-    }
 }

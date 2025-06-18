@@ -4,6 +4,8 @@ use App\Http\Controllers\StatistikController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\MonitoringController;
 
 // Route untuk halaman utama (login jika belum terotentikasi)
 Route::get('/', function () {
@@ -15,7 +17,7 @@ Route::get('/', function () {
             return redirect()->route('indeks_inovator');
         }
     }
-    return view('layout.login'); // Mengarahkan ke welcome.blade.php sebagai halaman utama
+    return view('login'); // Mengarahkan ke welcome.blade.php sebagai halaman utama
 })->name('home'); // Mengubah nama route menjadi 'home' untuk konsistensi
 
 // Route untuk halaman registrasi
@@ -23,7 +25,7 @@ Route::get('registrasi', [AuthController::class, 'tampilRegistrasi'])->name('reg
 Route::post('registrasi/submit', [AuthController::class, 'submitRegistrasi'])->name('registrasi.submit');
 
 // Route untuk halaman login
-Route::get('layout.login', [AuthController::class, 'tampilLogin'])->name('login.tampil');
+Route::get('login', [AuthController::class, 'tampilLogin'])->name('login.tampil');
 Route::post('login/submit', [AuthController::class, 'submitLogin'])->name('login.submit'); // Mengubah method menjadi POST dan path sama
 
 // Route untuk logout
@@ -42,6 +44,13 @@ Route::put('/profile/update', [UserController::class, 'updateProfile'])
 Route::get('/statistik', [StatistikController::class, 'index'])
        ->name('statistik')
        ->middleware('auth'); // Tambahkan middleware auth di sini jika statistik hanya untuk user yang login
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/monitoring', [MonitoringController::class, 'index'])->name('monitoring.index');
+    Route::get('/monitoring/{id}', [MonitoringController::class, 'show'])->name('monitoring.show');
+});
+
+Route::get('/formajuan', [ProjectController::class, 'formajuan'])->name('project.formajuan');
 
 // Route yang memerlukan otentikasi
 Route::middleware(['auth'])->group(function () {
@@ -62,18 +71,37 @@ Route::middleware(['auth'])->group(function () {
     //     return view('statistik');
     // })->name('statistik');
 
-    Route::get('/monitoring', function () {
-        return view('monitoring');
-    })->name('monitoring');
-
     Route::get('/profil', function () {
         return view('profile');
     })->name('profile');
 });
+//08 mnambahkan berikut:
+// Route::get('registrasi', [AuthController::class, 'tampilRegristasi'])->name('regristasi.tampil'); // Typo 'Regristasi'
+Route::middleware(['auth'])->group(function () {
+    Route::get('/pengajuan-dana', [ProjectController::class, 'create'])->name('project.create');
+    Route::post('/pengajuan-dana', [ProjectController::class, 'store'])->name('project.store');
+});
+
+Route::get('/formajuan', [ProjectController::class, 'formajuan'])->name('project.formajuan');
+// Hapus route duplikat atau yang tidak terpakai di bawah ini jika ada
+// Route::get('/', function () {
+//     return view('login');
+// })->name('login'); // Duplikat dengan login.tampil
+
+// Route::get('/indeks_investor', function () {
+//     return view('indeks_investor');
+// })->name('home'); // 'home' sebaiknya untuk halaman utama, bukan spesifik investor
+
+// Route::get('/registrasi', function () {
+//     return view('registrasi');
+// })->name('registrasi'); // Duplikat dengan registrasi.tampil
+
+
+
 
 // Hapus route duplikat atau yang tidak terpakai di bawah ini jika ada
 // Route::get('/', function () {
-//     return view('layout.login');
+//     return view('login');
 // })->name('login'); // Duplikat dengan login.tampil
 
 // Route::get('/indeks_investor', function () {

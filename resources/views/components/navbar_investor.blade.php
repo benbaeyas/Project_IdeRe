@@ -211,8 +211,8 @@
     <a href="{{ route('statistik') }}" 
        class="{{ request()->routeIs('statistik') ? 'active' : '' }}">Statistik</a>
 
-    <a href="{{ route('monitoring') }}" 
-       class="{{ request()->routeIs('monitoring') ? 'active' : '' }}">Monitoring</a>
+    <a href="{{ route('monitoring.index') }}" 
+       class="{{ request()->routeIs('monitoring.index') ? 'active' : '' }}">Monitoring</a>
 
     <a href="{{ route('profile') }}" 
        class="{{ request()->routeIs('profile') ? 'active' : '' }}">Profile</a>
@@ -240,8 +240,8 @@
     <a href="{{ route('pinjaman') }}" 
        class="{{ request()->routeIs('pinjaman') ? 'active' : '' }}">Pinjaman</a>
 
-    <a href="{{ route('monitoring') }}" 
-       class="{{ request()->routeIs('monitoring') ? 'active' : '' }}">Monitoring</a>
+    <a href="{{ route('monitoring.index') }}" 
+       class="{{ request()->routeIs('monitoring.index') ? 'active' : '' }}">Monitoring</a>
 
     <a href="{{ route('profile') }}" 
        class="{{ request()->routeIs('profile') ? 'active' : '' }}">Profile</a>

@@ -58,7 +58,7 @@
           <li><svg viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>Tenor fleksibel hingga 24 bulan</li>
           <li><svg viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>Pelunasan dengan sistem angsuran setiap bulan</li>
         </ul>
-        <a href="#">Ajukan Pinjaman</a>
+        <a href="{{ route('project.formajuan') }}">Ajukan Pinjaman</a>
       </div>
 
       <!-- APF -->
@@ -71,7 +71,7 @@
           <li><svg viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>Tenor hingga 120 hari</li>
           <li><svg viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>Pelunasan dengan sistem bullet repayment</li>
         </ul>
-        <a href="#">Ajukan Pinjaman</a>
+        <a href="{{ route('project.formajuan') }}">Ajukan Pinjaman</a>
       </div>
 
       <!-- Invoice Financing -->
@@ -84,7 +84,7 @@
           <li><svg viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>Tenor fleksibel hingga 90 hari</li>
           <li><svg viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>Pelunasan dengan sistem angsuran</li>
         </ul>
-        <a href="#">Ajukan Pinjaman</a>
+        <a href="{{ route('project.formajuan') }}">Ajukan Pinjaman</a>
       </div>
     </div>
   </section>
@@ -100,8 +100,7 @@
         <img src="{{ asset('Gambar/Testi 4.png') }}" alt="Testimoni 4">
         <img src="{{ asset('Gambar/Testi 5.png') }}" alt="Testimoni 5">
         <img src="{{ asset('Gambar/Testi 6.png') }}" alt="Testimoni 6">
-
-        <!-- Duplikasi slide pertama untuk efek looping -->
+       <!-- Duplikasi slide pertama untuk efek looping -->
         <img src="{{ asset('Gambar/Testi 1.png') }}" alt="Testimoni 1 (duplikat)">
  
       </div>

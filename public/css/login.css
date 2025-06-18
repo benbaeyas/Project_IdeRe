@@ -101,7 +101,8 @@
         }
 
         .login-form input[type="email"],
-        .login-form input[type="password"] {
+        .login-form input[type="password"],
+        .login-form input[type="text"] {
             width: 100%;
             padding: 12px;
             border: 1px solid #ccc;
@@ -111,7 +112,8 @@
         }
 
         .login-form input[type="email"]:focus,
-        .login-form input[type="password"]:focus {
+        .login-form input[type="password"]:focus,
+        .login-form input[type="text"]:focus {
             outline: none;
             border-color: #00CF95;
             box-shadow: 0 0 0 3px rgba(0, 207, 149, 0.2);
@@ -149,6 +151,25 @@
 
         .register-link a:hover {
             color: #00a67d;
+        }
+
+        .password-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .password-container input {
+            padding-right: 40px; /* Memberi ruang untuk ikon */
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #888;
+            z-index: 1;
         }
 
         /* Responsif */

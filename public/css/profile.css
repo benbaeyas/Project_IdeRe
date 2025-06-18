@@ -65,6 +65,16 @@
       border-radius: 6px;
       font-size: 14px;
       box-sizing: border-box;
+      transition: border-color 0.3s ease;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="password"]:focus, 
+    textarea:focus {
+      outline: none;
+      border-color: #00CF95;
+      box-shadow: 0 0 0 3px rgba(0, 207, 149, 0.2);
     }
 
     textarea {
@@ -145,5 +155,45 @@
     button:hover {
       background-color: #00a67d;
     }
+
+/* Gaya untuk Notifikasi */
+.notification {
+    position: fixed; /* Atau absolute jika relatif terhadap container tertentu */
+    top: 80px; /* Sesuaikan jarak dari atas, setelah navbar */
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    color: white;
+    font-size: 16px;
+    z-index: 1000; /* Pastikan muncul di atas elemen lain */
+    min-width: 250px; /* Lebar minimum notifikasi */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out; /* Pastikan ada transisi opacity */
+}
+
+.success-notification {
+    background-color: #28a745; /* Warna hijau untuk sukses (sesuaikan dengan tema) */
+}
+
+.error-notification {
+    background-color: #dc3545; /* Warna merah untuk error (sesuaikan dengan tema) */
+}
+
+/* Script sederhana untuk menghilangkan notifikasi setelah beberapa detik (opsional, bisa ditambahkan di JS file) */
+/* Jika ingin menggunakan ini, pastikan ada file JS yang di-include dan script ini diletakkan di sana */
+/*
+document.addEventListener('DOMContentLoaded', function() {
+    const notifications = document.querySelectorAll('.notification');
+    notifications.forEach(notification => {
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 500); // Waktu untuk transisi opacity selesai
+        }, 5000); // Notifikasi hilang setelah 5 detik
+    });
+});
+*/
 
 
