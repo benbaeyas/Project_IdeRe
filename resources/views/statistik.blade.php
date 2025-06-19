@@ -13,65 +13,16 @@
 
     <!-- CSS Eksternal -->
     <link rel="stylesheet" href="{{ asset('css/statistik.css') }}">
+
+    @livewireStyles
 </head>
 <body class="bg-gray-100 min-h-screen">
     <!-- Navbar -->
     @include('components.navbar_investor') 
 
-    <!-- Statistik Investasi Per Bulan -->
-    <section class="chart-section bg-white p-10 shadow-md rounded-lg my-5 mx-5">
-        <h2 class="text-2xl md:text-3xl font-bold text-center mb-6">Statistik Total Investasi Per Bulan</h2>
-        <div class="chart-container w-full max-w-4xl mx-auto">
-            <canvas id="statistik-investasi" class="w-full h-72 md:h-96"></canvas>
-        </div>
-    </section>
-
-    <script>
-        const ctx = document.getElementById('statistik-investasi');
-
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: @json($labels),
-                datasets: [{
-                    label: 'Total Investasi',
-                    data: @json($data),
-                    backgroundColor: '#00CF95',
-                    borderColor: '#00CF95',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Total Investasi (IDR)',
-                            font: {
-                                size: 16
-                            }
-                        }
-                    },
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Bulan',
-                            font: {
-                                size: 16
-                            }
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                }
-            }
-        });
-    </script>
-
+    <livewire:investment-chart />
+    @stack('scripts') 
+    @livewireScripts
 
     <!-- Daftar Proyek & Pendanaan -->
     <section class="chart-section bg-white p-10 shadow-md rounded-lg my-5 mx-5">

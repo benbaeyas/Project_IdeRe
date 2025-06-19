@@ -22,63 +22,62 @@
   <!-- Main Content -->
   <main class="flex-grow">
     <div class="container max-w-4xl mx-auto px-4 py-10 bg-white p-10 shadow-md rounded-lg my-5 mx-5">
-      <section class="list-group">
-        <h2 class="text-2xl font-bold mb-6">Daftar Proyek yang Dapat Dimonitor</h2>
+        <section class="list-group">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold">Daftar Proyek yang Dapat Dimonitor</h2>
 
-        @if($projects->isEmpty())
-          <p class="empty-state text-center text-gray-500">Tidak ada proyek tersedia.</p>
-        @else
-          @foreach ($projects as $project)
-            @php
-              $percentage = $project->target_dana > 0 
-                  ? ($project->dana_terkumpul / $project->target_dana) * 100 
-                  : 0;
-            @endphp
+            <!-- Search Box -->
+            <div class="relative w-64">
+            <input type="text" id="searchInput" placeholder="Cari proyek..." 
+                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    value="{{ request('search') }}">
+            </div>
+        </div>
 
-            <a href="{{ route('monitoring.show', $project->id) }}" class="project-item block bg-white rounded-lg shadow-md p-4 mb-4 transition transform hover:scale-105 duration-300">
-              <div class="flex gap-4">
-                <img src="{{ asset('storage/' . $project->foto_proyek) }}"
-                    alt="Foto Proyek"
-                    class="project-photo w-32 h-32 object-cover rounded"
-                    onerror="this.onerror=null; this.src='{{ asset('images/default-project.png') }}';">
+        <!-- Filter Status -->
+        <div class="mb-4 flex gap-2">
+            <label class="inline-flex items-center">
+            <input type="checkbox" name="statusFilter" value="open" checked class="form-checkbox h-5 w-5 text-green-600">
+            <span class="ml-2">Open</span>
+            </label>
+            <label class="inline-flex items-center">
+            <input type="checkbox" name="statusFilter" value="closed" class="form-checkbox h-5 w-5 text-red-600">
+            <span class="ml-2">Closed</span>
+            </label>
+        </div>
 
-                <div class="project-info flex-1">
-                  <span class="project-title font-bold text-lg">{{ $project->judul }}</span>
-
-                  <div class="project-meta flex items-center gap-2 mt-2 text-sm text-gray-500">
-                    <span class="badge {{ $project->status === 'open' ? 'bg-green-500' : 'bg-red-500' }} text-white px-2 py-1 rounded">
-                      {{ ucfirst($project->status) }}
-                    </span>
-                    <span>{{ \Carbon\Carbon::parse($project->tanggal_mulai)->format('d M Y') }}</span>
-                    <span>→</span>
-                    <span>{{ \Carbon\Carbon::parse($project->tanggal_berakhir)->format('d M Y') }}</span>
-                  </div>
-
-                  <div class="project-description mt-2 text-sm text-gray-700 line-clamp-2">
-                    {{ Str::limit(strip_tags($project->deskripsi), 100) }}
-                  </div>
-
-                  <div class="funding-progress mt-4">
-                    <div class="progress-bar-container h-2 bg-gray-200 rounded-full overflow-hidden">
-                      <div class="progress-bar h-full bg-green-500" style="width: {{ min($percentage, 100) }}%"></div>
-                    </div>
-                    <div class="funding-details mt-2 text-sm text-gray-600">
-                      <strong>Rp {{ number_format($project->dana_terkumpul, 0, ',', '.') }}</strong> dari 
-                      <strong>Rp {{ number_format($project->target_dana, 0, ',', '.') }}</strong>
-                    </div>
-                  </div>
-
-                  <button class="mt-4 inline-block bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-2 px-4 rounded">
-                    Lihat Detail Monitoring
-                  </button>
-                </div>
-              </div>
-            </a>
-          @endforeach
-        @endif
-      </section>
+        <!-- Projects List -->
+        <div id="projectList">
+            @include('partials.projects_list', ['projects' => $projects])
+        </div>
+        </section>
     </div>
   </main>
+
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+    <script>
+    $(document).ready(function () {
+        function loadProjects() {
+            const search = $('#searchInput').val();
+            const statuses = [];
+            $('input[name="statusFilter"]:checked').each(function () {
+                statuses.push($(this).val());
+            });
+
+            $.get("{{ route('monitoring.index') }}", { search: search, status: statuses }, function (data) {
+                $('#projectList').html(data);
+            });
+        }
+
+        // Trigger saat pencarian atau filter berubah
+        $('#searchInput, input[name="statusFilter"]').on('change keyup', function () {
+            loadProjects();
+        });
+
+        // Load awal
+        loadProjects();
+    });
+    </script>
 
   <!-- Footer -->
   @include('components.footer')

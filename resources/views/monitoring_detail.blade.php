@@ -21,8 +21,24 @@
         <div class="container max-w-4xl mx-auto px-4 py-10">
             <div class="project-detail-card bg-white rounded-xl shadow-md p-8 mb-6">
                 <!-- Tombol Kembali -->
+
+                @php
+                    $role = Auth::user()->role ?? '';
+                @endphp
                 <div class="project-section mb-6">
-                    <a href="{{ route('monitoring_inovator') }}" class="btn-back inline-block px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition duration-300">← Kembali ke Daftar Proyek</a>
+                    @if ($role === 'investor')
+                        <a href="{{ route('monitoring_investor') }}" class="btn-back inline-block px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition duration-300">
+                            <i class="fas fa-arrow-left"></i> Kembali
+                        </a>
+                    @elseif ($role === 'inovator')
+                        <a href="{{ route('monitoring_inovator') }}" class="btn-back inline-block px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition duration-300">
+                            <i class="fas fa-arrow-left"></i> Kembali
+                        </a>
+                    @else
+                        <a href="{{ route('home') }}" class="btn-back inline-block px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition duration-300">
+                            <i class="fas fa-arrow-left"></i> Kembali
+                        </a>
+                    @endif
                 </div>
 
                 <!-- Judul -->

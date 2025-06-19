@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\MonitoringController;
 use App\Http\Controllers\InvestmentController;
+use App\Http\Livewire\InvestmentChart;
 
 // Route untuk halaman utama (login jika belum terotentikasi)
 Route::get('/', function () {
@@ -93,33 +94,5 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('/formajuan', [ProjectController::class, 'formajuan'])->name('project.formajuan');
-// Hapus route duplikat atau yang tidak terpakai di bawah ini jika ada
-// Route::get('/', function () {
-//     return view('login');
-// })->name('login'); // Duplikat dengan login.tampil
 
-// Route::get('/indeks_investor', function () {
-//     return view('indeks_investor');
-// })->name('home'); // 'home' sebaiknya untuk halaman utama, bukan spesifik investor
-
-// Route::get('/registrasi', function () {
-//     return view('registrasi');
-// })->name('registrasi'); // Duplikat dengan registrasi.tampil
-
-
-
-
-// Hapus route duplikat atau yang tidak terpakai di bawah ini jika ada
-// Route::get('/', function () {
-//     return view('login');
-// })->name('login'); // Duplikat dengan login.tampil
-
-// Route::get('/indeks_investor', function () {
-//     return view('indeks_investor');
-// })->name('home'); // 'home' sebaiknya untuk halaman utama, bukan spesifik investor
-
-// Route::get('/registrasi', function () {
-//     return view('registrasi');
-// })->name('registrasi'); // Duplikat dengan registrasi.tampil
-
-// Route::get('registrasi', [AuthController::class, 'tampilRegristasi'])->name('regristasi.tampil'); // Typo 'Regristasi'
+Route::get('/monitoring', [ProjectController::class, 'index'])->name('monitoring.index');

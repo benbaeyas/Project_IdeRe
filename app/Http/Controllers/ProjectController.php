@@ -12,9 +12,25 @@ class ProjectController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        //
+public function index(Request $request)
+{
+    // Ambil input pencarian dan filter
+    $search = $request->input('search');
+    $statuses = $request->input('status', ['open']); // Default hanya 'open'
+
+    // Query proyek dengan filter
+    $projects = Project::query()
+        ->when($search, function ($query, $search) {
+            return $query->where('judul', 'like', "%{$search}%");
+        })
+        ->whereIn('status', $statuses)
+        ->paginate(10); // Atau paginate sesuai kebutuhan
+
+    if ($request->ajax()) {
+        return view('partials.projects_list', compact('projects'))->render();
+    }
+
+    return view('monitoring_inovator', compact('projects', 'search'));
     }
 
     /**
