@@ -80,30 +80,6 @@
         </div>
     </section>
 
-    <!-- Riwayat Pendanaan Anda -->
-    <section class="chart-section bg-white p-10 shadow-md rounded-lg my-5 mx-5">
-        <h2 class="text-2xl md:text-3xl font-bold text-center mb-6">Riwayat Pendanaan Anda</h2>
-        <div class="investment-list space-y-4">
-            @foreach ($investments as $investment)
-                <div class="investment-card bg-white p-4 rounded-lg shadow-sm">
-                    <h3 class="font-semibold text-base">{{ $investment->project->judul }}</h3>
-                    <p>Jumlah: Rp {{ number_format($investment->jumlah_investasi, 0, ',', '.') }}</p>
-                    <p>Tanggal: {{ $investment->tanggal_investasi }}</p>
-                    
-                    @if($investment->project->dana_terkumpul >= $investment->project->target_dana)
-                        <form action="{{ route('investment.destroy', $investment->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus pendanaan ini?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn-delete mt-3 px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded text-sm transition duration-300">
-                                Hapus Pendanaan
-                            </button>
-                        </form>
-                    @endif
-                </div>
-            @endforeach
-        </div>
-    </section>
-
     <!-- Footer -->
     @include('components.footer')
 

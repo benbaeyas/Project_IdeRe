@@ -76,19 +76,29 @@ class InvestmentController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy(Investment $investment)
-{
-    // Pastikan user hanya bisa menghapus pendanaan miliknya sendiri
-    if ($investment->user_id !== Auth::id()) {
-        abort(403, 'Unauthorized');
+    {
+        // Debugging (opsional, bisa dihapus setelah fix)
+        // dd($investment);
+
+        if (!$investment) {
+            return redirect()->route('monitoring_investor')->with('error', 'Investasi tidak ditemukan.');
+        }
+
+        if ((int)$investment->user_id !== (int)Auth::id()) {
+            return redirect()->route('monitoring_investor')->with('error', 'Anda tidak memiliki izin untuk menghapus investasi ini.');
+        }
+
+        try {
+            $jumlahInvestasiDihapus = $investment->jumlah_investasi;
+            $projectId = $investment->project_id;
+
+            $investment->delete();
+
+            Project::where('id', $projectId)->decrement('dana_terkumpul', $jumlahInvestasiDihapus);
+
+            return redirect()->route('monitoring_investor')->with('success', 'Investasi berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->route('monitoring_investor')->with('error', 'Gagal menghapus investasi: ' . $e->getMessage());
+        }
     }
-
-    // Kembalikan jumlah investasi ke proyek (kurangi dana_terkumpul)
-    $investment->project->decrement('dana_terkumpul', $investment->jumlah_investasi);
-
-    // Hapus pendanaan
-    $investment->delete();
-
-    return redirect()->back()->with('success', 'Pendanaan berhasil dihapus.');
-}
-
 }

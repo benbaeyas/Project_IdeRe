@@ -14,15 +14,14 @@ class Investment extends Model
         'project_id',
         'jumlah_investasi',
         'tanggal_investasi',
+        // tambahkan field lain jika ada
     ];
 
-    // ✅ Relasi ke project
     public function project()
     {
         return $this->belongsTo(Project::class);
     }
 
-    // ✅ Relasi ke user/investor (jika diperlukan)
     public function user()
     {
         return $this->belongsTo(User::class);

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
+use App\Models\Investment; // Tambahkan ini
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+
 
 class MonitoringController extends Controller
 {
@@ -19,11 +21,15 @@ class MonitoringController extends Controller
 
     // Khusus Investor
     public function indexInvestor()
-{
-    $projects = Project::with('category')->get();
-    return view('monitoring_investor', compact('projects')); // ⬅ View ini menerima LIST
-}
+    {
+        $projects = Project::with('category')->get();
+        $investments = Investment::with('project') // Ambil juga relasi project untuk detail
+                                 ->where('user_id', Auth::id()) // Hanya investasi milik user yang login
+                                 ->orderBy('tanggal_investasi', 'desc') // Urutkan berdasarkan tanggal terbaru
+                                 ->get();
 
+        return view('monitoring_investor', compact('projects', 'investments')); // Kirim kedua variabel
+    }
 
     // Detail monitoring (bisa digunakan oleh keduanya)
     public function show($id)
