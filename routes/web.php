@@ -58,12 +58,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/monitoring/{id}', [MonitoringController::class, 'show'])->name('monitoring.show');
 });
 
+Route::get('/pencarian', [MonitoringController::class, 'searchProjects'])->name('pencarian');
+
 Route::get('/formajuan', [ProjectController::class, 'formajuan'])->name('project.formajuan');
 
 Route::post('/investasi/store', [App\Http\Controllers\InvestmentController::class, 'store'])->name('investasi.store');
-Route::delete('/investment/{investment}', [InvestmentController::class, 'destroy'])
-    ->name('investment.destroy')
-    ->middleware('auth');
+
 // Route yang memerlukan otentikasi
 Route::middleware(['auth'])->group(function () {
     Route::get('/indeks_investor', function () {
@@ -95,5 +95,3 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('/formajuan', [ProjectController::class, 'formajuan'])->name('project.formajuan');
-
-Route::get('/monitoring', [ProjectController::class, 'index'])->name('monitoring.index');

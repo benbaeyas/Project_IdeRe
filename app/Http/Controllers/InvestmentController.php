@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Investment;
 use Illuminate\Http\Request;
 use App\Models\Project;
+use App\Models\Monitoring;
+
 
 
 class InvestmentController extends Controller
@@ -29,25 +31,29 @@ class InvestmentController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-{
-    $request->validate([
-        'project_id' => 'required|exists:projects,id',
-        'jumlah_investasi' => 'required|numeric|min:1000',
-    ]);
+    {
+        // Validasi input
+        $request->validate([
+            'project_id' => 'required|exists:projects,id',
+            'jumlah_investasi' => 'required|numeric|min:1',
+        ]);
 
-    Investment::create([
-        'user_id' => Auth::id(),
-        'project_id' => $request->project_id,
-        'jumlah_investasi' => $request->jumlah_investasi,
-        'tanggal_investasi' => now(),
-    ]);
+        // Ambil project untuk akses judul/deskripsi
+        $project = Project::findOrFail($request->project_id);
+        $project->increment('dana_terkumpul', $request->jumlah_investasi);
+        $project->update();
 
-    // Update dana terkumpul di proyek
-    Project::where('id', $request->project_id)->increment('dana_terkumpul', $request->jumlah_investasi);
+        // Simpan data investasi
+        Investment::create([
+            'user_id' => Auth::id(),
+            'project_id' => $project->id,
+            'jumlah_investasi' => $request->jumlah_investasi,
+            'tanggal_investasi' => now(),
+            'status' => 'pending',
+        ]);
 
-    return redirect()->route('statistik')->with('success', 'Pendanaan berhasil!');
-}
-
+        return redirect()->route('monitoring_investor')->with('success', 'Investasi berhasil dilakukan!');
+    }
     /**
      * Display the specified resource.
      */
@@ -77,28 +83,6 @@ class InvestmentController extends Controller
      */
     public function destroy(Investment $investment)
     {
-        // Debugging (opsional, bisa dihapus setelah fix)
-        // dd($investment);
-
-        if (!$investment) {
-            return redirect()->route('monitoring_investor')->with('error', 'Investasi tidak ditemukan.');
-        }
-
-        if ((int)$investment->user_id !== (int)Auth::id()) {
-            return redirect()->route('monitoring_investor')->with('error', 'Anda tidak memiliki izin untuk menghapus investasi ini.');
-        }
-
-        try {
-            $jumlahInvestasiDihapus = $investment->jumlah_investasi;
-            $projectId = $investment->project_id;
-
-            $investment->delete();
-
-            Project::where('id', $projectId)->decrement('dana_terkumpul', $jumlahInvestasiDihapus);
-
-            return redirect()->route('monitoring_investor')->with('success', 'Investasi berhasil dihapus.');
-        } catch (\Exception $e) {
-            return redirect()->route('monitoring_investor')->with('error', 'Gagal menghapus investasi: ' . $e->getMessage());
-        }
+        //
     }
 }

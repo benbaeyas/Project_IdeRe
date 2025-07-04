@@ -3,17 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
-use App\Models\Investment; // Tambahkan ini
+use App\Models\Investment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-
+use App\Models\Monitoring;
+use Illuminate\View\View;
 
 class MonitoringController extends Controller
 {
     // Khusus Inovator
     public function indexInovator()
     {
-        // Ambil semua proyek milik user yang sedang login
         $projects = Project::where('user_id', Auth::id())->get();
 
         return view('monitoring_inovator', compact('projects'));
@@ -22,13 +22,21 @@ class MonitoringController extends Controller
     // Khusus Investor
     public function indexInvestor()
     {
-        $projects = Project::with('category')->get();
-        $investments = Investment::with('project') // Ambil juga relasi project untuk detail
-                                 ->where('user_id', Auth::id()) // Hanya investasi milik user yang login
-                                 ->orderBy('tanggal_investasi', 'desc') // Urutkan berdasarkan tanggal terbaru
-                                 ->get();
+        // Ambil semua investasi milik user ini
+        $investments = Investment::where('user_id', auth()->id())
+            ->with('project')
+            ->latest()
+            ->get();
 
-        return view('monitoring_investor', compact('projects', 'investments')); // Kirim kedua variabel
+        // Kelompokkan berdasarkan project_id
+        $groupedInvestments = $investments->groupBy('project_id');
+
+        // Ambil semua proyek untuk pencarian/filter
+        $projects = Project::with(['investments' => function($q) {
+            $q->where('user_id', auth()->id());
+        }])->get();
+
+        return view('monitoring_investor', compact('groupedInvestments', 'projects'));
     }
 
     // Detail monitoring (bisa digunakan oleh keduanya)
@@ -36,12 +44,46 @@ class MonitoringController extends Controller
     {
         $project = Project::with('category', 'user')->findOrFail($id);
 
-        // Untuk investor, tidak perlu cek kepemilikan
-        // Tapi untuk inovator, perlu dicek apakah dia pemiliknya
-        if (Auth::user()->role === 'inovator' && $project->user_id !== Auth::id()) {
+        if (Auth::check() && Auth::user()->role === 'inovator' && $project->user_id !== Auth::id()) {
             abort(403, 'Unauthorized');
         }
 
         return view('monitoring_detail', compact('project'));
+    }
+
+    // Cari Proyek (AJAX)
+    public function searchProjects(Request $request)
+    {
+        // Query dasar proyek
+        $query = Project::query()->with(['investments' => function($q) {
+            if (Auth::check()) {
+                $q->where('user_id', auth()->id());
+            }
+        }]);
+
+        // Filter pencarian
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function($q) use ($search) {
+                $q->where('judul', 'like', "%$search%")
+                  ->orWhere('deskripsi', 'like', "%$search%");
+            });
+        }
+
+        // Filter status
+        if ($request->filled('status') && is_array($request->status)) {
+            $query->whereIn('status', $request->status);
+        }
+
+        $projects = $query->get();
+
+        // Hanya return partial jika AJAX
+        if ($request->ajax()) {
+            return view('partials.projects_list', compact('projects'))->render();
+        }
+
+        // Untuk load awal halaman (jika bukan AJAX)
+        return view('statistik', compact('projects'));
+        
     }
 }

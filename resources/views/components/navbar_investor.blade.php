@@ -164,7 +164,7 @@
   </div>
   <div class="desktop-nav">
     <a href="{{ route('indeks_investor') }}" class="{{ request()->routeIs('indeks_investor') ? 'active' : '' }}">Home</a>
-    <a href="{{ route('statistik') }}" class="{{ request()->routeIs('statistik') ? 'active' : '' }}">statistik</a>
+    <a href="{{ route('statistik') }}" class="{{ request()->routeIs('statistik') ? 'active' : '' }}">Statistik</a>
     <a href="{{ route('monitoring_investor') }}" class="{{ request()->routeIs('monitoring_investor') ? 'active' : '' }}">Monitoring</a>
     <a href="{{ route('profile') }}" class="{{ request()->routeIs('profile') ? 'active' : '' }}">Profile</a>
   </div>
@@ -180,7 +180,7 @@
   <div class="mobile-close" onclick="toggleMobileMenu()">&times;</div>
   <div class="mobile-links">
     <a href="{{ route('indeks_investor') }}" class="{{ request()->routeIs('indeks_investor') ? 'active' : '' }}">Home</a>
-    <a href="{{ route('statistik') }}" class="{{ request()->routeIs('statistik') ? 'active' : '' }}">statistik</a>
+    <a href="{{ route('statistik') }}" class="{{ request()->routeIs('statistik') ? 'active' : '' }}">Statistik</a>
     <a href="{{ route('monitoring_investor') }}" class="{{ request()->routeIs('monitoring_investor ') ? 'active' : '' }}">Monitoring</a>
     <a href="{{ route('profile') }}" class="{{ request()->routeIs('profile') ? 'active' : '' }}">Profile</a>
   </div>

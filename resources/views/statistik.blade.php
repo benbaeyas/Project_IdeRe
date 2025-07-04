@@ -27,71 +27,93 @@
     <!-- Daftar Proyek & Pendanaan -->
     <section class="chart-section bg-white p-10 shadow-md rounded-lg my-5 mx-5">
         <h2 class="text-2xl md:text-3xl font-bold text-center mb-6">Daftar Proyek & Pendanaan</h2>
-        <div class="project-list space-y-6">
-            @foreach($projects as $project)
-                <div class="project-card-horizontal flex items-center bg-white rounded-lg shadow-sm p-4 hover:shadow transition-shadow duration-300">
-                    <!-- Thumbnail -->
-                    <img src="{{ asset('storage/' . $project->foto_proyek) }}" 
-                        alt="Foto Proyek" 
-                        class="project-thumbnail w-20 h-20 object-cover rounded shadow-sm"
-                        onerror="this.src='{{ asset('images/default-project.png') }}'; this.onerror=null;">
+        <!-- Search Box -->
+        <div class="relative w-64">
+        <input type="text" id="searchInput" placeholder="Cari proyek..." 
+                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value="{{ request('search') }}">
+        </div>
 
-                    <!-- Informasi Proyek -->
-                    <div class="project-info ml-4 flex-1">
-                        <div class="project-title font-semibold text-lg">{{ $project->judul }}</div>
-                        <div class="project-meta text-sm text-gray-600 mb-2">
-                            {{ \Carbon\Carbon::parse($project->tanggal_mulai)->format('d M Y') }} → 
-                            {{ \Carbon\Carbon::parse($project->tanggal_berakhir)->format('d M Y') }}
-                        </div>
-                        <div class="project-description text-sm text-gray-700 line-clamp-2 mb-3">
-                            {{ $project->deskripsi }}
-                        </div>
+        <div class="flex space-x-4 mb-4">
+            <label class="inline-flex items-center">
+                <input type="checkbox" name="statusFilter" value="open" class="form-checkbox h-5 w-5 text-green-500">
+                <span class="ml-2 text-gray-700">Open</span>
+            </label>    
+            <label class="inline-flex items-center">
+                <input type="checkbox" name="statusFilter" value="closed" class="form-checkbox h-5 w-5 text-green-500">
+                <span class="ml-2 text-gray-700">Closed</span>
+            </label>
+        </div>
 
-                        <!-- Progress Dana -->
-                        <div class="funding-progress mb-3">
-                            @php
-                                $percentage = $project->target_dana > 0 
-                                    ? ($project->dana_terkumpul / $project->target_dana) * 100 
-                                    : 0;
-                            @endphp
-                            <div class="progress-bar-container h-2 bg-gray-200 rounded-full overflow-hidden">
-                                <div class="progress-bar h-full bg-green-500" style="width: {{ min($percentage, 100) }}%"></div>
-                            </div>
-                            <div class="funding-details text-xs text-gray-600 mt-1">
-                                <strong>Rp {{ number_format($project->dana_terkumpul, 0, ',', '.') }}</strong> dari 
-                                <strong>Rp {{ number_format($project->target_dana, 0, ',', '.') }}</strong>
-                            </div>
-                        </div>
+        <div class="projects_list space-y-6">
+            <!-- statistik.blade.php -->
+            @include('partials.projects_list', ['projects' => $projects ?? collect([])])
+        </div>
+    </section>
 
-                        <!-- Form Investasi -->
-                        <form action="{{ route('investasi.store') }}" method="POST" class="mt-3">
-                            @csrf
-                            <input type="hidden" name="project_id" value="{{ $project->id }}">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Jumlah Pendanaan (Rp):</label>
-                            <input type="number" name="jumlah_investasi" required min="1"
-                                class="form-input w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-400">
-                            <button type="submit" class="btn-danai mt-2 w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded transition duration-300">
-                                Danai Sekarang
-                            </button>
-                        </form>
-                    </div>
+    <!-- Riwayat Pendanaan Anda -->
+    <section class="chart-section bg-white p-10 shadow-md rounded-lg my-5 mx-5">
+        <h2 class="text-2xl md:text-3xl font-bold text-center mb-6">Riwayat Pendanaan Anda</h2>
+        <div class="investment-list space-y-4">
+            @foreach ($investments->sortByDesc('tanggal_investasi')->take(5) as $investment)
+                <div class="investment-card bg-white p-4 rounded-lg shadow-sm">
+                    <h3 class="font-semibold text-base">{{ $investment->project->judul }}</h3>
+                    <p>Jumlah: Rp {{ number_format($investment->jumlah_investasi, 0, ',', '.') }}</p>
+                    <p>Tanggal: {{ $investment->tanggal_investasi }}</p>
+                    
                 </div>
             @endforeach
         </div>
     </section>
 
+
     <!-- Footer -->
     @include('components.footer')
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js "></script>
     <script>
-        function toggleDetail(id) {
-            var el = document.getElementById(id);
-            if (el.classList.contains('hidden')) {
-                el.classList.remove('hidden');
+        function formatRupiahAndSync(input, projectId) {
+            let rawValue = input.value.replace(/\D/g, '');
+            const hiddenInput = document.getElementById('target_dana_hidden_' + projectId);
+
+            if (hiddenInput) {
+                hiddenInput.value = rawValue;
+                console.log("Nilai dikirim:", rawValue); // Debug
             } else {
-                el.classList.add('hidden');
+                console.error("Input hidden tidak ditemukan untuk proyek " + projectId);
             }
         }
+
+        $(document).ready(function () {
+            function loadProjects() {
+                const search = $('#searchInput').val();
+                const statuses = [];
+                $('input[name="statusFilter"]:checked').each(function () {
+                    statuses.push($(this).val());
+                });
+
+                $.get("{{ route('pencarian') }}", { search: search, status: statuses }, function (data) {
+                    $('.projects_list').html(data); // Ganti konten daftar proyek
+                }).fail(function () {
+                    $('.projects_list').html('<p class="text-center text-red-500">Gagal memuat data.</p>');
+                });
+            }
+
+            // Trigger saat pencarian atau filter berubah
+            $('#searchInput, input[name="statusFilter"]').on('change keyup', function () {
+                loadProjects();
+            });
+
+            // Load awal
+            $('#searchInput').on('input', function () {
+                loadProjects();
+            });
+
+            // Jika ada checkbox status filter
+            $('input[name="statusFilter"]').on('change', function () {
+                loadProjects();
+            });
+        });
     </script>
 
 </body>

@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Categories;
 use App\Models\User;
 class Project extends Model
 {
+    use SoftDeletes; // ⬅️ Tambahkan trait ini
     use HasFactory;
 //08 menambahkan berikut
     protected $fillable = [
@@ -29,5 +31,21 @@ class Project extends Model
     {
     return $this->belongsTo(User::class);
     }
+
+    public function monitorings()
+    {
+    return $this->hasMany(Monitoring::class);
+    }
+    public function investments()
+    {
+        return $this->hasMany(Investment::class);
+    }
+
+    public function isTargetDanaTercapai()
+    {
+    return $this->dana_terkumpul >= $this->target_dana;
+    }
+
+    
     
 }

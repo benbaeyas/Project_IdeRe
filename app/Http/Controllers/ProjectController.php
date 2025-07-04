@@ -12,31 +12,6 @@ class ProjectController extends Controller
     /**
      * Display a listing of the resource.
      */
-public function index(Request $request)
-{
-    // Ambil input pencarian dan filter
-    $search = $request->input('search');
-    $statuses = $request->input('status', ['open']); // Default hanya 'open'
-
-    // Query proyek dengan filter
-    $projects = Project::query()
-        ->when($search, function ($query, $search) {
-            return $query->where('judul', 'like', "%{$search}%");
-        })
-        ->whereIn('status', $statuses)
-        ->paginate(10); // Atau paginate sesuai kebutuhan
-
-    if ($request->ajax()) {
-        return view('partials.projects_list', compact('projects'))->render();
-    }
-
-    return view('monitoring_inovator', compact('projects', 'search'));
-    }
-
-    /**
-     * Show the form for creating a new resource (form pengajuan dana).
-     */
-    //08 menambahkan berikut:
     public function create()
     {
         $categories = Categories::all(); // Ambil data kategori dari tabel categories
@@ -48,16 +23,17 @@ public function index(Request $request)
      */
     public function store(Request $request)
     {
-        $request->validate([
+        // Validasi
+        $validated = $request->validate([
             'judul' => 'required|string|max:200',
             'deskripsi' => 'required|string',
-            'foto_proyek' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // Tambahkan mimes untuk validasi tipe file
-            'target_dana' => 'required|numeric|min:1', // Tambahkan min value jika perlu
+            'foto_proyek' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'target_dana' => 'required|numeric|min:1',
             'tanggal_mulai' => 'required|date',
             'tanggal_berakhir' => 'required|date|after_or_equal:tanggal_mulai',
             'category_id' => 'required|exists:categories,id',
         ], [
-            // Pesan kustom untuk validasi (opsional)
+            // Pesan kustom validasi (opsional)
             'judul.required' => 'Judul proyek tidak boleh kosong.',
             'deskripsi.required' => 'Deskripsi proyek tidak boleh kosong.',
             'target_dana.required' => 'Jumlah ajuan dana tidak boleh kosong.',
@@ -91,7 +67,7 @@ public function index(Request $request)
             ]);
 
             return redirect()->route('project.formajuan')->with('success_ajuan', 'Proyek berhasil diajukan!');
-            
+
         } catch (\Exception $e) {
             \Log::error('Gagal menyimpan proyek: ' . $e->getMessage());
             return redirect()->back()
@@ -133,6 +109,6 @@ public function formajuan()
      */
     public function destroy(Project $project)
     {
-        //
+
     }
 }

@@ -26,4 +26,9 @@ class Investment extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+        protected $casts = [
+        'dana_terkumpul' => 'decimal:2',
+        'target_dana' => 'decimal:2',
+    ];
 }

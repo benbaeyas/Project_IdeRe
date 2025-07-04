@@ -52,13 +52,21 @@
 
                 <div class="form-group">
                     <label for="foto_proyek">Foto Proyek</label>
-                    <input type="file" name="foto_proyek" id="foto_proyek" accept="image/*" 
-                    oninput="this.files[0].size <= 2097152 || alert('Ukuran file terlalu besar! Maksimum 2MB.')">
+                    <input type="file" name="foto_proyek" id="foto_proyek" accept="image/*" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400" 
+                    onchange="checkFileSize(this)">                
                 </div>
 
+                {{-- Notifikasi Error File --}}
+                @if(session('error_file'))
+                    <div class="notification error-notification fixed top-20 right-5 bg-red-500 text-white px-4 py-3 rounded shadow z-50 transition-opacity duration-500 ease-in-out opacity-100">
+                        {{ session('error_file') }}
+                    </div>
+                @endif
+
                 <div class="form-group">
-                    <label for="target_dana">Jumlah Ajuan Dana (Rp)</label>
-                    <input type="number" name="target_dana" id="target_dana" value="{{ old('target_dana') }}" required>
+                    <label for="target_dana_display">Jumlah Ajuan Dana (Rp)</label>
+                    <input type="text" id="target_dana_display" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400" oninput="formatRupiahAndSync(this)">
+                    <input type="hidden" name="target_dana" id="target_dana_hidden" value="{{ old('target_dana') }}">
                 </div>
 
                 <div class="form-group">
@@ -89,17 +97,61 @@
     </div>
     
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const notifications = document.querySelectorAll('.notification');
-    notifications.forEach(notification => {
+function checkFileSize(input) {
+    const file = input.files[0];
+    const maxSize = 2 * 1024 * 1024; // 2 MB
+    if (file && file.size > maxSize) {
+        // Hapus file jika terlalu besar
+        input.value = '';
+
+        // Buat elemen notifikasi
+        let errorDiv = document.createElement('div');
+        errorDiv.className = 'notification error-notification fixed top-20 right-5 bg-red-500 text-white px-4 py-3 rounded shadow z-50 transition-opacity duration-500 ease-in-out opacity-100';
+        errorDiv.innerText = 'Ukuran file terlalu besar! Maksimal 2MB.';
+
+        document.body.appendChild(errorDiv);
+
+        // Hilangkan notifikasi setelah 5 detik
         setTimeout(() => {
-            notification.style.opacity = '0';
+            errorDiv.style.opacity = '0';
             setTimeout(() => {
-                notification.style.display = 'none';
-            }, 500); 
-        }, 5000); 
+                errorDiv.remove();
+            }, 500);
+        }, 5000);
+    }
+}
+
+function formatRupiahAndSync(input) {
+    // Hapus semua selain angka
+    let rawValue = input.value.replace(/\D/g, '');
+
+    // Format dengan titik
+    let formattedValue = rawValue.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+    // Update input tampilan
+    input.value = formattedValue;
+
+    // Update input hidden (untuk dikirim ke server)
+    document.getElementById('target_dana_hidden').value = rawValue;
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const notifications = document.querySelectorAll('.notification');
+
+    notifications.forEach(notification => {
+        // Hilangkan notifikasi setelah 5 detik
+        setTimeout(() => {
+            notification.style.transition = 'opacity 0.5s ease';
+            notification.style.opacity = '0';
+
+            // Hapus elemen dari DOM setelah animasi selesai
+            setTimeout(() => {
+                notification.remove();
+            }, 500);
+        }, 5000); // 5000 ms = 5 detik
     });
 });
+
 </script>
 
 </body>

@@ -24,18 +24,11 @@
     <div class="container max-w-4xl mx-auto px-4 py-10 bg-white p-10 shadow-md rounded-lg my-5 mx-5">
         <section class="list-group">
         <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-bold">Daftar Proyek yang Dapat Dimonitor</h2>
-
-            <!-- Search Box -->
-            <div class="relative w-64">
-            <input type="text" id="searchInput" placeholder="Cari proyek..." 
-                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    value="{{ request('search') }}">
-            </div>
+            <h2 class="text-2xl font-bold">Daftar Proyek</h2>
         </div>
 
         <!-- Filter Status -->
-        <div class="mb-4 flex gap-2">
+        <!-- <div class="mb-4 flex gap-2">
             <label class="inline-flex items-center">
             <input type="checkbox" name="statusFilter" value="open" checked class="form-checkbox h-5 w-5 text-green-600">
             <span class="ml-2">Open</span>
@@ -44,42 +37,69 @@
             <input type="checkbox" name="statusFilter" value="closed" class="form-checkbox h-5 w-5 text-red-600">
             <span class="ml-2">Closed</span>
             </label>
-        </div>
+        </div> -->
 
-        <!-- Projects List -->
-        <div id="projectList">
-            @include('partials.projects_list', ['projects' => $projects])
-        </div>
+            @if ($groupedInvestments->isEmpty())
+                <p class="empty-state text-center text-gray-500">Anda belum mendanai proyek apapun.</p>
+            @else
+                @foreach ($groupedInvestments as $projectId => $investmentsGroup)
+                    @php
+                        $project = $investmentsGroup->first()->project;
+                        $totalInvestment = $investmentsGroup->sum('jumlah_investasi');
+                        $percentage = $project->target_dana > 0 
+                            ? ($totalInvestment / $project->target_dana) * 100 
+                            : 0;
+                    @endphp
+
+                    <a href="{{ route('monitoring.show', $project->id) }}" class="project-item block bg-white rounded-lg shadow-md p-4 mb-4 transition transform hover:scale-105 duration-300">
+                        <div class="flex gap-4 items-start">
+                            <!-- Foto Proyek -->
+                            <img src="{{ asset('storage/' . $project->foto_proyek) }}"
+                                alt="Foto Proyek"
+                                class="w-24 h-24 object-cover rounded"
+                                onerror="this.onerror=null; this.src='{{ asset('images/default-project.png') }}';">
+
+                            <!-- Info Proyek -->
+                            <div class="flex-1">
+                                <h3 class="font-bold text-lg">{{ $project->judul }}</h3>
+                                <div class="project-meta flex items-center gap-2 mt-2 text-sm text-gray-500">
+                                    <span class="badge {{ $project->status === 'open' ? 'bg-green-500' : 'bg-red-500' }} text-white px-2 py-1 rounded">
+                                        {{ ucfirst($project->status) }}
+                                    </span>
+                                    <span>{{ \Carbon\Carbon::parse($project->tanggal_mulai)->format('d M Y') }}</span>
+                                    <span>→</span>
+                                    <span>{{ \Carbon\Carbon::parse($project->tanggal_berakhir)->format('d M Y') }}</span>
+                                </div>
+                                <div class="project-description mt-2 text-sm text-gray-700 line-clamp-2">
+                                    {{ Str::limit(strip_tags($project->deskripsi), 100) }}
+                                </div>
+
+                                <!-- Progress Dana -->
+                                <div class="mt-3">
+                                    <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                                        <div class="h-full bg-green-500" style="width: {{ min($percentage, 100) }}%"></div>
+                                    </div>
+                                    <div class="mt-1 text-sm text-gray-600">
+                                        <strong>Rp{{ number_format($totalInvestment, 0, ',', '.') }}</strong> dari 
+                                        <strong>Rp{{ number_format($project->target_dana, 0, ',', '.') }}</strong>
+                                    </div>
+                                </div>
+
+                                <!-- Detail Investor -->
+                                <div class="mt-2 text-xs text-gray-500">
+                                    Anda telah mendanai proyek ini sebanyak 
+                                    <strong>{{ $investmentsGroup->count() }}</strong> kali
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                @endforeach
+            @endif
         </section>
     </div>
   </main>
 
-      <!-- Riwayat Pendanaan Anda -->
-    <section class="chart-section bg-white p-10 shadow-md rounded-lg my-5 mx-5">
-        <h2 class="text-2xl md:text-3xl font-bold text-center mb-6">Riwayat Pendanaan Anda</h2>
-        <div class="investment-list space-y-4">
-            @foreach ($investments as $investment)
-                <div class="investment-card bg-white p-4 rounded-lg shadow-sm">
-                    <h3 class="font-semibold text-base">{{ $investment->project->judul }}</h3>
-                    <p>Jumlah: Rp {{ number_format($investment->jumlah_investasi, 0, ',', '.') }}</p>
-                    <p>Tanggal: {{ $investment->tanggal_investasi }}</p>
-                    
-                    @if($investment->project->dana_terkumpul >= $investment->project->target_dana)
-                        <form action="{{ route('investment.destroy', $investment) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus pendanaan ini?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn-delete mt-3 px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded text-sm transition duration-300">
-                                Hapus Pendanaan
-                            </button>
-                        </form>
-                    @endif
-                </div>
-            @endforeach
-        </div>
-    </section>
-
-   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
-    <script>
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js">
     $(document).ready(function () {
         function loadProjects() {
             const search = $('#searchInput').val();
@@ -88,7 +108,7 @@
                 statuses.push($(this).val());
             });
 
-            $.get("{{ route('monitoring.index') }}", { search: search, status: statuses }, function (data) {
+            $.get("{{ route('monitoring_investor') }}", { search: search, status: statuses }, function (data) {
                 $('#projectList').html(data);
             });
         }

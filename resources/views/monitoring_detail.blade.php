@@ -70,22 +70,24 @@
                     <p class="text-gray-800 text-lg"><strong class="font-medium">Terkumpul:</strong> Rp {{ number_format($project->dana_terkumpul, 0, ',', '.') }}</p>
 
                     <!-- Progress Bar -->
-                    @php
-                        $percentage = $project->target_dana > 0 
-                            ? ($project->dana_terkumpul / $project->target_dana) * 100 
-                            : 0;
-                    @endphp
+                    <div class="funding-progress mb-3">
+                        @php
+                            // Hitung total investasi untuk proyek ini
+                            $totalInvestment = $project->investments->sum('jumlah_investasi');
 
-                    <div class="funding-progress mt-4">
-                        <div class="progress-bar-container h-3 bg-gray-200 rounded-full overflow-hidden">
-                            <div class="progress-bar h-full bg-green-500 flex items-center justify-end pr-2 text-xs text-white"
-                                 style="width: {{ min($percentage, 100) }}%">
-                                {{ number_format(min($percentage, 100), 1) }}%
-                            </div>
+                            // Hitung persentase
+                            $percentage = $project->target_dana > 0 
+                                ? ($totalInvestment / $project->target_dana) * 100 
+                                : 0;
+                        @endphp
+
+                        <div class="progress-bar-container h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="progress-bar h-full bg-green-500" style="width: {{ min($percentage, 100) }}%"></div>
                         </div>
-                        <div class="funding-details mt-2 text-sm text-gray-600">
-                            <strong>Rp {{ number_format($project->dana_terkumpul, 0, ',', '.') }}</strong> dari 
-                            <strong>Rp {{ number_format($project->target_dana, 0, ',', '.') }}</strong>
+
+                        <div class="funding-details text-xs text-gray-600 mt-1">
+                            <strong>Rp{{ number_format($totalInvestment, 0, ',', '.') }}</strong> dari 
+                            <strong>Rp{{ number_format($project->target_dana, 0, ',', '.') }}</strong>
                         </div>
                     </div>
                 </div>
